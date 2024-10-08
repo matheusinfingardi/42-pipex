@@ -6,7 +6,7 @@
 /*   By: minfinga <minfinga@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/28 17:46:03 by minfinga          #+#    #+#             */
-/*   Updated: 2024/09/09 17:59:58 by minfinga         ###   ########.fr       */
+/*   Updated: 2024/10/07 17:13:38 by minfinga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,24 +15,24 @@
 void	error_exit(int exit_nbr)
 {
 	if (exit_nbr == 1)
-		ft_putstr_fd("./pipex infile cmd cmd outfile\n", 2);
+		ft_putstr_fd("Error: ./pipex infile cmd cmd outfile\n", 2);
 	exit(EXIT_FAILURE);
 }
 
 int	open_file(char *file, int in_or_out)
 {
-	int	ret;
+	int	return_fd;
 
-	if (in_or_out == 0)
-		ret = open (file, O_RDONLY, 0777);
-	if (in_or_out == 1)
-		ret = open(file, O_WRONLY | O_CREAT | O_TRUNC, 0777);
-	if (ret == -1)
+	if (in_or_out == STDIN_FILENO)
+		return_fd = open(file, O_RDONLY, 0777);
+	if (in_or_out == STDOUT_FILENO)
+		return_fd = open(file, O_WRONLY | O_CREAT | O_TRUNC, 0777);
+	if (return_fd == -1)
 		exit(EXIT_FAILURE);
-	return (ret);
+	return (return_fd);
 }
 
-void	ft_free_tab(char **tab)
+void	free_tab(char **tab)
 {
 	size_t	i;
 
@@ -45,7 +45,7 @@ void	ft_free_tab(char **tab)
 	free(tab);
 }
 
-char	*ft_getenv(char *name, char **envp)
+char	*get_env(char *name, char **envp)
 {
 	int		i;
 	int		j;
@@ -72,27 +72,27 @@ char	*ft_getenv(char *name, char **envp)
 char	*get_path(char *cmd, char **envp)
 {
 	int		i;
-	char	*exec;
+	char	*exec_path;
 	char	**all_path;
 	char	*part_path;
-	char	**s_cmd;
+	char	**split_cmd;
 
 	i = -1;
-	all_path = ft_split(ft_getenv("PATH", envp), ':');
-	s_cmd = ft_split(cmd, ' ');
+	all_path = ft_split(get_env("PATH", envp), ':');
+	split_cmd = ft_split(cmd, ' ');
 	while (all_path[++i])
 	{
 		part_path = ft_strjoin(all_path[i], "/");
-		exec = ft_strjoin(part_path, s_cmd[0]);
+		exec_path = ft_strjoin(part_path, split_cmd[0]);
 		free(part_path);
-		if (access(exec, F_OK | X_OK) == 0)
+		if (access(exec_path, F_OK | X_OK) == 0)
 		{
-			ft_free_tab(s_cmd);
-			return (exec);
+			free_tab(split_cmd);
+			return (exec_path);
 		}
-		free(exec);
+		free(exec_path);
 	}
-	ft_free_tab(all_path);
-	ft_free_tab(s_cmd);
+	free_tab(all_path);
+	free_tab(split_cmd);
 	return (cmd);
 }

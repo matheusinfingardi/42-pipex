@@ -6,7 +6,7 @@
 #    By: minfinga <minfinga@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/08/07 19:07:09 by minfinga          #+#    #+#              #
-#    Updated: 2024/10/01 14:08:58 by minfinga         ###   ########.fr        #
+#    Updated: 2024/10/07 16:04:57 by minfinga         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,7 +20,7 @@ INC = ./inc ./libs/ft_printf/include ./libs/libft
 SRC_DIR = srcs/
 OBJ_DIR = obj/
 
-CC = gcc
+CC = cc
 CFLAGS = -Wall -Werror -Wextra $(addprefix -I, $(INC))
 RM = rm -rf
 
